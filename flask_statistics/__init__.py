@@ -15,12 +15,13 @@ class Statistics:
         db: SQLAlchemy = None,
         model: Model = None,
         before_f: Callable = None,
+        url_prefix="/statistics",
         **kwargs
     ):
 
         if (app is not None and db is not None
                 and model is not None):
-            self.init_app(app, db, model, before_f, **kwargs)
+            self.init_app(app, db, model, before_f, url_prefix, **kwargs)
 
     def init_app(
         self,
@@ -28,6 +29,7 @@ class Statistics:
         db: SQLAlchemy,
         model: Model,
         before_f: Callable = None,
+        url_prefix="/statistics",
         **kwargs
     ) -> None:
         """Initalizes extensions."""
@@ -49,8 +51,9 @@ class Statistics:
         self.app.teardown_request(self.teardown_request)
 
         # Blueprint
-        self.blueprint = Blueprint("statistics", __name__, template_folder="./templates",
-                                   url_prefix="/statistics")
+        self.blueprint = Blueprint(
+            "statistics", __name__,
+            template_folder="./templates", url_prefix=url_prefix)
         self.blueprint.add_url_rule("/", "index", self.index_view)
         if before_f is not None:
             self.blueprint.before_request(before_f)
