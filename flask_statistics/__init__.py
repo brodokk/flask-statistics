@@ -179,7 +179,11 @@ class Statistics:
             # ip address
             obj["remote_address"] = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
             # requested path (e.g. /homepage, /about, ...)
-            obj["path"] = request.path
+            path = request.path
+            path += "?" + "&".join(
+                [f"{k}={v}" for k,v in [arg for arg in request.args.items()]]
+            )
+            obj["path"] = path
             # page that linked to requested page
             obj["referrer"] = request.referrer
             # browser and version
